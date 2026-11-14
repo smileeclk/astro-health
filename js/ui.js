@@ -32,7 +32,7 @@ export function reasonText(r, refs) {
   if (r.key === 'radiation') {
     return r.event || r.value >= refs.radiation.dailyYellow_mSv
       ? t('reason.radiation.high', { rate: fmt(r.rate, 2) })
-      : t('reason.radiation.ok', { cum: fmt(r.cumulative, 1), pct: fmt(r.pct, 1) });
+      : t('reason.radiation.ok', { cum: fmt(r.cumulative, 1) });
   }
   if (r.key === 'bone') return t('reason.bone', { lo: fmt(r.lo, 1), hi: fmt(r.hi, 1) });
   if (r.key === 'vision' && r.value > 0) return t('reason.vision.' + r.value);

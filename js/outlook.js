@@ -3,7 +3,7 @@
 // 1. Indicators: a robust straight line is fitted to the last 14 days and extended 30 days.
 //    A change smaller than normal day-to-day noise counts as "flat".
 // 2. Cumulative loads: radiation dose, sleep debt, exercise deficit, bone loss (NASA rate 1–1.5 %/month).
-// 3. Everything is mapped to NASA HRP risks as Low / Medium / High.
+// 3. Prototype indicators use Low / Medium / High levels.
 import { t, L, fmt, esc } from './i18n.js';
 import { evalMetric, computeBaseline, worst, missionDay } from './rules.js';
 
@@ -66,13 +66,11 @@ export function computeOutlook(entries, envKey, refs, res) {
   const worstOf = (list) => list.reduce((s, x) => worst(s, x.status), 'green');
 
   /* ----- 2. cumulative loads ----- */
-  const R = refs.radiation;
   const rad = res.metrics.radiation;
   const radProj = rad.cumulative + H * env.doseRate;
-  const radPct = (radProj / R.careerLimit_mSv) * 100;
   const radiation = {
-    now: rad.cumulative, proj: radProj, pct: radPct,
-    status: worst(rad.status, byLimits(radPct, R.careerYellowPct, R.careerRedPct)),
+    now: rad.cumulative, proj: radProj,
+    status: rad.status,
   };
 
   const deficits = recent.map((e) => e.sleepH).filter(Number.isFinite).map((h) => Math.max(0, O.sleepNeedH - h));
@@ -104,7 +102,7 @@ export function computeOutlook(entries, envKey, refs, res) {
   const marked = recent.some((e) => e.vision >= 2);
   const sans = { reports: visionReports, status: marked || visionReports >= O.visionRedReports ? 'red' : visionReports > 0 ? 'yellow' : 'green' };
 
-  /* ----- 3. NASA HRP risks ----- */
+  /* ----- 3. Prototype indicators ----- */
   const risks = [
     { id: 'cardio', system: 'cardio', status: worstOf(ms('hr', 'sys', 'dia')), metrics: ms('hr', 'sys', 'dia') },
     { id: 'sleep', system: 'brain', status: worst(worstOf(ms('sleepH', 'sleepQ')), sleepDebt.status), metrics: ms('sleepH', 'sleepQ'), loads: ['sleepDebt'] },
@@ -134,7 +132,7 @@ function forecast(m) {
 
 function loadText(key, out) {
   const l = out.loads[key];
-  if (key === 'radiation') return t('cum.radiation.v', { now: fmt(l.now, 1), proj: fmt(l.proj, 1), pct: fmt(l.pct, 1) });
+  if (key === 'radiation') return t('cum.radiation.v', { now: fmt(l.now, 1), proj: fmt(l.proj, 1) });
   if (key === 'sleepDebt') return t('cum.sleep.v', { now: fmt(l.now, 1), proj: fmt(l.proj, 1) });
   if (key === 'exercise') return l.hasData ? t('cum.exercise.v', { n: l.sessions, need: l.need }) : t('cum.exercise.none');
   if (key === 'bone') return t('cum.bone.v', { now: fmt(l.now, 1), lo: fmt(l.lo, 1), hi: fmt(l.hi, 1) });
@@ -183,7 +181,9 @@ export function renderOutlook(el, out, { refs, content, sources }) {
     const l = out.loads[key];
     return `<div class="card riskcard ${l.status}"><div class="chead"><h3>${title}</h3>${pill(l.status)}</div><p>${esc(loadText(key, out))}</p></div>`;
   };
-  const src = sources.hrp_risks;
+  const sourceLinks = [sources.hrp_hazards, sources.hrp_risks, sources.hrp_research]
+    .map((source) => `<a href="${esc(source.url)}" target="_blank" rel="noopener">${esc(source.title)} ↗</a>`)
+    .join(' · ');
 
   el.innerHTML = `
     <div class="outlook">
@@ -206,6 +206,7 @@ export function renderOutlook(el, out, { refs, content, sources }) {
           <tbody>${rows}</tbody>
         </table>
       </div>
-      <p class="fine">${t('panel.fine')} · <a href="${esc(src.url)}" target="_blank" rel="noopener">${esc(src.title)} ↗</a></p>
+      <p class="why">${t('outlook.research')}</p>
+      <p class="fine">${sourceLinks}</p>
     </div>`;
 }

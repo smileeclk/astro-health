@@ -21,6 +21,7 @@ let refs, content, sources;
 let i4 = null;         // Inspiration4 blood values (real NASA data)
 let spaceWx = null;    // latest space weather (live, cached or snapshot)
 let lastRes = null;    // latest assessment, used by the emergency report
+let skeletonState = '';
 let body = null; // 3D figure (js/body.js); stays null if WebGL is unavailable
 
 const getJSON = (url) => fetch(url).then((r) => r.json());
@@ -169,6 +170,7 @@ function renderDashboard() {
   renderPanel($('#organPanel'), {
     id: selected, res, entries, refs, content, sources, envKey: state.env, badge: dataBadge('hr'), i4, outlookHtml,
   });
+  renderSkeletonStatus();
   if (body) {
     body.setStatuses(statuses);
     body.setSelected(selected);
@@ -176,10 +178,24 @@ function renderDashboard() {
 }
 
 // The figure is loaded separately so the app still works without WebGL.
+function renderSkeletonStatus() {
+  const status = $('#bodyStatus');
+  status.hidden = selected !== 'bones' || !['loading', 'fallback'].includes(skeletonState);
+  status.textContent = status.hidden ? '' : t('body.skeleton.' + skeletonState);
+}
+
 async function initBody() {
   try {
     const { createBody } = await import('./body.js');
-    body = createBody($('#bodyStage'), { onSelect: selectSystem });
+    body = createBody($('#bodyStage'), {
+      onSelect: selectSystem,
+      onSkeletonState(next) {
+        skeletonState = next;
+        renderSkeletonStatus();
+      },
+    });
+    $('#bodyReset').hidden = false;
+    $('#bodyReset').addEventListener('click', () => body.resetView());
     renderDashboard();
   } catch (e) {
     $('#bodyStage').innerHTML = '<div class="fallback" data-i18n="body.fallback"></div>';
@@ -209,27 +225,26 @@ function renderEnvStrip() {
   $('#envStrip').innerHTML = `
     <span>📡 ${t('env.delay')}: <b>${esc(delayText(env))}</b></span>
     <span>☢ ${t('env.dose')}: <b>${esc(env.doseRange)} ${t('env.perDay')}</b>
-      ${src && src.url ? `<a href="${esc(src.url)}" target="_blank" rel="noopener" title="${esc(src.title)}">↗</a>` : ''}</span>
+      ${src && src.url ? `<a href="${esc(src.url)}" target="_blank" rel="noopener" title="${esc(src?.title || '')}">↗</a>` : ''}</span>
     <span class="note">${t('env.note.' + state.env)}</span>`;
 }
 
-// Cumulative mission dose against the NASA career limit (600 mSv).
+// Estimated mission dose based on the selected environment.
 function renderDoseCard(res) {
   const el = $('#doseCard');
   if (res.empty) { el.innerHTML = ''; return; }
   const r = res.metrics.radiation;
-  const limit = refs.radiation.careerLimit_mSv;
-  const src = sources[refs.radiation.careerSource];
-  const daysLeft = Math.max(0, Math.round((limit - r.cumulative) / r.rate));
+  const src = sources[currentEnv().source];
+  const csa = sources.csa_radiation;
   el.innerHTML = `
     <button type="button" class="card dosecard ${r.status}" data-system="blood" style="width:100%;text-align:left">
       <div class="chead"><h3>${t('dose.title')}</h3><span class="badge">${t('label.nasa')}</span>${isDemo() ? `<span class="badge sim">${t('badge.sim')}</span>` : ''}</div>
-      <div class="big">${fmt(r.cumulative, 1)} <small>mSv ${t('dose.of', { limit })} · ${fmt(r.pct, 1)}%</small></div>
-      <div class="bar"><i class="${r.status}" style="width:${Math.min(100, r.pct).toFixed(1)}%"></i></div>
-      <div class="why">${t('dose.rate', { env: t('env.' + state.env), rate: fmt(r.rate, 2) })}. ${t('dose.left', { days: fmt(daysLeft) })}</div>
+      <div class="big">${fmt(r.cumulative, 1)} <small>mSv</small></div>
+      <div class="why">${t('dose.rate', { env: t('env.' + state.env), rate: fmt(r.rate, 2) })}</div>
       <div class="why">${r.event ? t('dose.spe') : t('dose.model')}</div>
       <div class="fine">${esc(src.title)}</div>
-    </button>`;
+    </button>
+    <p class="fine">${t('dose.csa')} <a href="${esc(csa.url)}" target="_blank" rel="noopener">CSA · CANS ↗</a></p>`;
 }
 
 function liveAlertHtml() {
@@ -239,8 +254,7 @@ function liveAlertHtml() {
       <span class="ico">☢</span>
       <div>
         <h3>${t('alert.live.title', { s: spaceWx.level })} <span class="badge real">${t('badge.real')}</span></h3>
-        <p>${t('alert.live.body', { flux: fmt(spaceWx.flux, 1), delay: esc(delayText(currentEnv())) })}</p>
-        <button type="button" class="btn primary" style="margin-top:10px" data-act="shelter">${t('em.open.shelter')}</button>
+        <p>${t('alert.live.body', { flux: fmt(spaceWx.flux, 1) })}</p>
       </div>
     </div>`;
 }
@@ -267,7 +281,12 @@ async function refreshSpaceWeather() {
 
 function renderChrome() {
   applyI18n();
-  document.querySelectorAll('[data-lang]').forEach((b) => b.classList.toggle('active', b.dataset.lang === state.lang));
+  $('.seg.lang').setAttribute('aria-label', t('language.label'));
+  document.querySelectorAll('[data-lang]').forEach((button) => {
+    const active = button.dataset.lang === state.lang;
+    button.classList.toggle('active', active);
+    button.setAttribute('aria-pressed', String(active));
+  });
   document.querySelectorAll('.tab').forEach((b) => b.classList.toggle('active', b.dataset.view === view));
   $('#envSelect').innerHTML = ENVS.map((e) => `<option value="${e}"${e === state.env ? ' selected' : ''}>${t('env.' + e)}</option>`).join('');
   $('#view-dashboard').hidden = view !== 'dashboard';

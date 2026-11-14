@@ -118,7 +118,7 @@ function buildReport() {
     lines.push(...['hr', 'sys', 'dia', 'temp', 'glucose', 'sleepH', 'sleepQ', 'mood', 'vision'].map(val).filter(Boolean).map((x) => '  ' + x));
     const flags = Object.values(m).filter((x) => x.status !== 'green').map((x) => `${name(x.key)} (${statusText(x)})`);
     lines.push(`${t('rep.flags')}: ${flags.length ? flags.join(', ') : t('rep.none')}`);
-    lines.push(`${t('dose.title')}: ${fmt(m.radiation.cumulative, 1)} mSv (${fmt(m.radiation.pct, 1)}% / ${ctx.refs.radiation.careerLimit_mSv} mSv)`);
+    lines.push(`${t('dose.title')}: ${fmt(m.radiation.cumulative, 1)} mSv`);
   }
   if (ctx.spaceWx && ctx.spaceWx.flux != null) {
     lines.push(`${t('sw.flux')}: ${fmt(ctx.spaceWx.flux, 2)} pfu · ${t('sw.scale', { s: ctx.spaceWx.level })} · ${t('sw.mode.' + ctx.spaceWx.mode)}`);

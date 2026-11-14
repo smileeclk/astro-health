@@ -53,7 +53,11 @@
             <button type="button" data-horizon="today" data-i18n="body.today">Today</button>
             <button type="button" data-horizon="30" data-i18n="body.plus30">+30 days</button>
           </div>
-          <div id="bodyStage" class="bodystage"></div>
+          <div class="bodyviewport">
+            <div id="bodyStage" class="bodystage"></div>
+            <button type="button" class="btn body-reset" id="bodyReset" data-i18n="body.reset" hidden></button>
+            <span class="body-status" id="bodyStatus" role="status" hidden></span>
+          </div>
           <p class="projnote" id="projNote" data-i18n="body.projNote" hidden></p>
           <p class="hint" id="bodyHint" data-i18n="body.hint"></p>
           <div id="systemChips" class="chips"></div>

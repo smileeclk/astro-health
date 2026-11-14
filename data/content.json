@@ -149,7 +149,7 @@
       },
       "space": {
         "en": "Without gravity, body fluids move toward the head and the heart works against less load. Blood volume drops and the cardiovascular system deconditions, which can cause dizziness or fainting when gravity returns. Radiation may add to long-term cardiovascular risk.",
-        "tr": "Yerçekimi olmayınca vücut sıvıları başa doğru kayar ve kalp daha az yüke karşı çalışır. Kan hacmi azalır, kalp-damar sistemi kondisyon kaybeder; bu da yerçekimine dönüldüğünde baş dönmesine ya da bayılmaya yol açabilir. Radyasyon uzun vadeli kalp-damar riskini artırabilir."
+        "tr": "Mikro yerçekiminde vücut sıvıları başa doğru kayar ve kalp daha az yüke karşı çalışır. Kan hacmi azalır, kalp-damar sistemi kondisyon kaybeder; bu da yerçekimine dönüldüğünde baş dönmesine ya da bayılmaya yol açabilir. Radyasyon uzun vadeli kalp-damar riskini artırabilir."
       },
       "hazards": [
         "gravity",
@@ -298,7 +298,7 @@
       },
       "space": {
         "en": "Without the load of gravity, weight-bearing bones such as the hip and spine lose 1–1.5% of their mineral density every month, and muscles shrink. Lost bone calcium also raises the risk of kidney stones. The estimate shown here is a model based on mission day, not a measurement.",
-        "tr": "Yerçekimi yükü olmayınca kalça ve omurga gibi yük taşıyan kemikler her ay mineral yoğunluğunun %1–1,5'ini kaybeder, kaslar da küçülür. Kemikten çözülen kalsiyum böbrek taşı riskini de artırır. Burada gösterilen tahmin, görev gününe dayalı bir modeldir; ölçüm değildir."
+        "tr": "Mikro yerçekiminde, karşı önlemler uygulanmadığında kalça ve omurga gibi yük taşıyan bölgelerde kemik mineral yoğunluğu azalabilir ve kas kaybı görülebilir. Kemikten çözülen kalsiyum böbrek taşı riskini de artırır. Burada gösterilen tahmin, görev gününe dayalı bir modeldir; ölçüm değildir."
       },
       "hazards": [
         "gravity"

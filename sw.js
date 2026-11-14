@@ -1,5 +1,5 @@
 // Offline support. Network-first (so new deploys show up), cache fallback (so it works with no internet).
-const CACHE = 'astroself-v14';
+const CACHE = 'astroself-v19';
 const ASSETS = [
   './',
   'index.html',
@@ -30,6 +30,9 @@ const ASSETS = [
   'data/emergency.json',
   'vendor/three.module.min.js',
   'vendor/OrbitControls.js',
+  'vendor/GLTFLoader.js',
+  'vendor/BufferGeometryUtils.js',
+  'vendor/meshopt_decoder.module.js',
   'vendor/chart.umd.js',
   'assets/icons/icon.svg',
   'assets/icons/icon-192.png',

@@ -62,7 +62,7 @@ export function renderReport(el, { res, out, entries, refs, content, envKey, who
       <table class="week"><thead><tr><th></th>${week.map((e) => `<th>${e.date.slice(5)}</th>`).join('')}</tr></thead><tbody>${weekRows}</tbody></table>
 
       <h2>${t('report.radiation')}</h2>
-      <p>${t('dose.title')}: <b>${fmt(r.cumulative, 1)} mSv</b> (${fmt(r.pct, 1)}% / ${refs.radiation.careerLimit_mSv} mSv) · ${t('dose.rate', { env: t('env.' + envKey), rate: fmt(r.rate, 2) })}
+      <p>${t('dose.title')}: <b>${fmt(r.cumulative, 1)} mSv</b> · ${t('dose.rate', { env: t('env.' + envKey), rate: fmt(r.rate, 2) })}
         ${spaceWx && spaceWx.flux != null ? `<br>${t('sw.flux')}: <b>${fmt(spaceWx.flux, 2)} pfu</b> · ${t('sw.scale', { s: spaceWx.level })} · ${t('sw.mode.' + spaceWx.mode)}` : ''}</p>
 
       <h2>${t('report.notes')}</h2>

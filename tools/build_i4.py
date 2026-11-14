@@ -10,6 +10,28 @@ Usage:  python tools/build_i4.py <cmp.csv> <cbc.csv> data/i4_blood.json
 import csv
 import json
 import sys
+from tempfile import TemporaryDirectory
+from pathlib import Path
+from urllib.parse import urlencode
+from urllib.request import urlopen
+
+OSDR_FILES = {
+    575: 'LSDS-8_Comprehensive_Metabolic_Panel_CMP_TRANSFORMED.csv',
+    569: 'LSDS-7_Complete_Blood_Count_CBC_TRANSFORMED.csv',
+}
+
+
+def refresh(out_path):
+    with TemporaryDirectory() as directory:
+        paths = []
+        for study, filename in OSDR_FILES.items():
+            query = urlencode({'source': 'datamanager', 'file': filename})
+            url = f'https://osdr.nasa.gov/geode-py/ws/studies/OSD-{study}/download?{query}'
+            path = Path(directory) / filename
+            with urlopen(url, timeout=30) as response:
+                path.write_bytes(response.read())
+            paths.append(path)
+        main(*paths, out_path)
 
 TIMEPOINTS = ['L-92', 'L-44', 'L-3', 'R+1', 'R+45', 'R+82', 'R+194']
 
@@ -79,4 +101,7 @@ def main(cmp_path, cbc_path, out_path):
 
 
 if __name__ == '__main__':
-    main(*sys.argv[1:4])
+    if len(sys.argv) == 3 and sys.argv[1] == '--fetch':
+        refresh(sys.argv[2])
+    else:
+        main(*sys.argv[1:4])

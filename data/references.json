@@ -251,10 +251,10 @@
   },
   "marsTransit": {
    "doseRate": 1.84,
-   "doseRange": "1.84 ± 0.30",
+   "doseRange": "1.84 ± 0.33",
    "delayMinSec": 0,
    "delayMaxSec": 2640,
-   "source": "hassler2014"
+   "source": "zeitlin2013"
   },
   "mars": {
    "doseRate": 0.64,
@@ -288,8 +288,8 @@
   },
   {
    "id": "marsDose",
-   "value": "1.84 ± 0.30 (transit) / 0.64 ± 0.12 (surface) mSv/day",
-   "source": "Hassler et al., Science 2014 (Curiosity RAD)"
+   "value": "1.84 ± 0.33 (transit) / 0.64 ± 0.12 (surface) mSv/day",
+   "source": "Zeitlin et al., Science 2013 (transit); Hassler et al., Science 2014 (surface)"
   },
   {
    "id": "moonDose",

@@ -75,7 +75,7 @@ Every card in the app carries a label: *Real NASA data*, *NASA-derived*, *Simula
 
 Inspiration4 notes: 4 civilian astronauts, 3-day mission, samples only before and after flight. The low glucose at
 R+45 is probably a sample-handling artefact and is not interpreted as a spaceflight effect. The embedded file can be
-rebuilt with `python tools/build_i4.py <cmp.csv> <cbc.csv> data/i4_blood.json`.
+rebuilt directly from NASA OSDR with `python tools/build_i4.py --fetch data/i4_blood.json`. The two-CSV command remains available for offline rebuilds.
 
 ### Reference values (`data/references.json`)
 
@@ -86,7 +86,7 @@ rebuilt with `python tools/build_i4.py <cmp.csv> <cbc.csv> data/i4_blood.json`.
 | ISS dose rate | ~0.5 mSv/day (order of magnitude) | NASA LSAH Newsletter 2023 |
 | Orion / Artemis I dose rate | 0.96–1.24 mSv/day | Nature 2024; [NTRS 20230010550](https://ntrs.nasa.gov/citations/20230010550) |
 | Lunar surface dose rate | ~1.37 mSv/day | [Zhang et al., Science Advances 2020](https://doi.org/10.1126/sciadv.aaz1334) (Chang'E-4) |
-| Mars transit / surface dose rate | 1.84 ± 0.30 / 0.64 ± 0.12 mSv/day | [Hassler et al., Science 2014](https://doi.org/10.1126/science.1244797) (Curiosity RAD) |
+| Mars transit / surface dose rate | 1.84 ± 0.33 / 0.64 ± 0.12 mSv/day | [Hassler et al., Science 2014](https://doi.org/10.1126/science.1244797) (Curiosity RAD) |
 | Cabin CO₂ | 1-hour average ≤ 3 mmHg | [NASA-STD-3001 Vol.2](https://www.nasa.gov/ochmo/health-operations-and-oversight/hsa-standards/) [V2 6004]; OCHMO-TB-004 |
 | Bone loss | 1–1.5% per month (hip/spine) | [HRP Evidence Reports](https://humanresearchroadmap.nasa.gov/evidence/): Bone Fracture, 2024 |
 | Sleep on the ISS | 6.09 h on average (8.5 h scheduled) | [Barger et al., Lancet Neurology 2014](https://doi.org/10.1016/S1474-4422(14)70122-X) |

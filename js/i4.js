@@ -29,7 +29,7 @@ export function i4Html(i4, glucose) {
       <thead><tr><th>${t('i4.col.analyte')}</th><th>${t('i4.col.pre')}</th><th>${t('i4.col.r1')}</th><th>${t('i4.col.range')}</th></tr></thead>
       <tbody>${rows}</tbody>
     </table>
-    <p class="fine">Source: <a href="${esc(i4.urls[0])}" target="_blank" rel="noopener">NASA OSDR OSD-575</a> /
+    <p class="fine">${t('i4.source')}: <a href="${esc(i4.urls[0])}" target="_blank" rel="noopener">NASA OSDR OSD-575</a> /
       <a href="${esc(i4.urls[1])}" target="_blank" rel="noopener">OSD-569</a> (Inspiration4)</p>`;
 }
 

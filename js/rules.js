@@ -130,18 +130,17 @@ export function evaluate(entries, envKey, refs) {
     metrics[key] = applyPersistence(evalMetric(key, latest[key], refs, baseline), prior, refs);
   }
 
-  // Radiation (NASA-derived): daily dose and mission total against the 600 mSv career limit.
+  // Radiation (NASA-derived): daily scenario thresholds and estimated mission total.
   const R = refs.radiation;
   const doses = entries.map((e) => (Number.isFinite(e.dose) ? e.dose : env.doseRate));
   const cumulative = doses.reduce((s, v) => s + v, 0);
   const today = doses[doses.length - 1];
-  const pct = (cumulative / R.careerLimit_mSv) * 100;
   let rStatus = 'green';
-  if (today >= R.dailyRed_mSv || pct >= R.careerRedPct) rStatus = 'red';
-  else if (today >= R.dailyYellow_mSv || pct >= R.careerYellowPct) rStatus = 'yellow';
+  if (today >= R.dailyRed_mSv) rStatus = 'red';
+  else if (today >= R.dailyYellow_mSv) rStatus = 'yellow';
   metrics.radiation = {
     key: 'radiation', value: today, status: rStatus, driver: rStatus === 'green' ? null : 'nasa', label: 'nasa',
-    cumulative, pct, rate: env.doseRate, event: today >= R.dailyRed_mSv,
+    cumulative, rate: env.doseRate, event: today >= R.dailyRed_mSv,
   };
 
   // Bone loss (NASA-derived model): 1–1.5% per month of weightlessness, from mission day.
